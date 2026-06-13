@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cenovnik – Dehidrirano Voće</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #F5EFE0;
+      --parchment:#EDE3CC;
+      --brown:    #5C3A1E;
+      --brown-dk: #3E2610;
+      --gold:     #B8883A;
+      --gold-lt:  #D4A855;
+      --text:     #3E2610;
+      --muted:    #7A5C3A;
+      --white:    #FFFDF7;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── decorative top band ── */
+    .top-band {
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--brown-dk), var(--gold), var(--brown-dk));
+    }
+
+    /* ── page wrapper ── */
+    .page {
+      width: 100%;
+      max-width: 520px;
+      padding: 36px 20px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* ── header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .leaf-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .leaf-row svg { opacity: .65; }
+
+    .title-main {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(2.4rem, 8vw, 3.2rem);
+      letter-spacing: .04em;
+      color: var(--brown-dk);
+      line-height: 1;
+    }
+
+    .title-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.25rem, 4.5vw, 1.7rem);
+      color: var(--gold);
+      margin-top: 4px;
+      letter-spacing: .01em;
+    }
+
+    .divider {
+      width: 80px;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 16px auto 12px;
+    }
+
+    .subtitle {
+      font-size: .82rem;
+      font-weight: 300;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── table card ── */
+    .card {
+      width: 100%;
+      background: var(--white);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(62,38,16,.12), 0 1px 4px rgba(62,38,16,.08);
+      border: 1.5px solid var(--parchment);
+    }
+
+    .table-head {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 0;
+      background: var(--brown);
+      padding: 14px 20px;
+    }
+    .table-head span {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--parchment);
+    }
+    .table-head span:nth-child(2) { text-align: center; min-width: 72px; }
+    .table-head span:nth-child(3) { text-align: right;  min-width: 100px; }
+
+    .item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 0;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--parchment);
+      transition: background .18s;
+    }
+    .item:last-child { border-bottom: none; }
+    .item:hover { background: #FAF5E8; }
+
+    .item-name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .fruit-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--parchment);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1.5px solid var(--gold-lt);
+      box-shadow: 0 2px 6px rgba(184,136,58,.15);
+      overflow: hidden;
+    }
+
+    .fruit-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .fruit-label {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--brown-dk);
+    }
+
+    .item-pkg {
+      min-width: 72px;
+      text-align: center;
+      font-size: .82rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: .04em;
+    }
+
+    .item-price {
+      min-width: 100px;
+      text-align: right;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--brown);
+    }
+    .item-price .currency {
+      font-size: .72rem;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700;
+      letter-spacing: .06em;
+      color: var(--gold);
+      margin-left: 3px;
+      vertical-align: middle;
+    }
+
+    /* highlight top item */
+    .item:first-child .item-price { color: var(--gold); }
+
+    /* ── footer / contact ── */
+    .contact {
+      margin-top: 28px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .contact-label {
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .contact-phone {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--brown);
+      color: var(--cream);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 13px 26px;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(62,38,16,.25);
+      transition: background .2s, transform .15s;
+    }
+    .contact-phone:hover  { background: var(--brown-dk); transform: translateY(-2px); }
+    .contact-phone:active { transform: translateY(0); }
+
+    .contact-phone svg { flex-shrink: 0; }
+
+    .bottom-note {
+      margin-top: 10px;
+      font-size: .72rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* ── bottom band ── */
+    .bottom-band {
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--brown-dk), var(--gold), var(--brown-dk));
+      margin-top: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .item, .contact-phone { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-band"></div>
+
+<div class="page">
+
+  <header class="header">
+    <!-- decorative leaf ornament -->
+    <div class="leaf-row">
+      <svg width="32" height="18" viewBox="0 0 32 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 16 C6 4, 16 2, 30 9" stroke="#B8883A" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <path d="M30 9 C20 6, 12 10, 8 16" stroke="#B8883A" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <circle cx="30" cy="9" r="2.5" fill="#B8883A" opacity=".5"/>
+      </svg>
+      <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" stroke="#B8883A" stroke-width="1.2" fill="none"/><line x1="7" y1="2" x2="7" y2="12" stroke="#B8883A" stroke-width=".9"/><line x1="2" y1="7" x2="12" y2="7" stroke="#B8883A" stroke-width=".9"/></svg>
+      <svg width="32" height="18" viewBox="0 0 32 18" fill="none" style="transform:scaleX(-1)">
+        <path d="M2 16 C6 4, 16 2, 30 9" stroke="#B8883A" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <path d="M30 9 C20 6, 12 10, 8 16" stroke="#B8883A" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <circle cx="30" cy="9" r="2.5" fill="#B8883A" opacity=".5"/>
+      </svg>
+    </div>
+
+    <div class="title-main">CENOVNIK</div>
+    <div class="title-sub">dehidriranog voća</div>
+    <div class="divider"></div>
+    <p class="subtitle">Pakovanje: 100 g &nbsp;·&nbsp; Cene u RSD</p>
+  </header>
+
+  <!-- price table -->
+  <div class="card">
+    <div class="table-head">
+      <span>Proizvod</span>
+      <span>Pak.</span>
+      <span>Cena</span>
+    </div>
+
+    <div class="item">
+      <div class="item-name">
+        <div class="fruit-icon"><img src="limeta.jpg" alt="Limeta" /></div>
+        <span class="fruit-label">Limeta</span>
+      </div>
+      <span class="item-pkg">100 g</span>
+      <span class="item-price">1.100 <span class="currency">RSD</span></span>
+    </div>
+
+    <div class="item">
+      <div class="item-name">
+        <div class="fruit-icon"><img src="pomorandza.jpg" alt="Pomorandža" /></div>
+        <span class="fruit-label">Pomorandža</span>
+      </div>
+      <span class="item-pkg">100 g</span>
+      <span class="item-price">700 <span class="currency">RSD</span></span>
+    </div>
+
+    <div class="item">
+      <div class="item-name">
+        <div class="fruit-icon"><img src="limun.jpg" alt="Limun" /></div>
+        <span class="fruit-label">Limun</span>
+      </div>
+      <span class="item-pkg">100 g</span>
+      <span class="item-price">700 <span class="currency">RSD</span></span>
+    </div>
+
+    <div class="item">
+      <div class="item-name">
+        <div class="fruit-icon"><img src="grejp.jpg" alt="Grejp" /></div>
+        <span class="fruit-label">Grejp</span>
+      </div>
+      <span class="item-pkg">100 g</span>
+      <span class="item-price">700 <span class="currency">RSD</span></span>
+    </div>
+
+    <div class="item">
+      <div class="item-name">
+        <div class="fruit-icon"><img src="kruska.jpg" alt="Kruška" /></div>
+        <span class="fruit-label">Kruška</span>
+      </div>
+      <span class="item-pkg">100 g</span>
+      <span class="item-price">700 <span class="currency">RSD</span></span>
+    </div>
+
+    <div class="item">
+      <div class="item-name">
+        <div class="fruit-icon"><img src="jabuka.jpg" alt="Jabuka" /></div>
+        <span class="fruit-label">Jabuka</span>
+      </div>
+      <span class="item-pkg">100 g</span>
+      <span class="item-price">600 <span class="currency">RSD</span></span>
+    </div>
+  </div>
+
+  <!-- contact -->
+  <div class="contact">
+    <span class="contact-label">Naručite odmah</span>
+    <a class="contact-phone" href="tel:+38163366530">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.72 12 19.79 19.79 0 011.65 3.38 2 2 0 013.62 1.21h3a2 2 0 012 1.72c.127.96.36 1.903.7 2.81a2 2 0 01-.45 2.11L7.91 8.91a16 16 0 006.29 6.29l1.27-.95a2 2 0 012.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+      </svg>
+      +381 63 366 530
+    </a>
+    <span class="bottom-note">Pozovite ili pošaljite poruku</span>
+  </div>
+
+</div>
+
+<div class="bottom-band"></div>
+
+</body>
+</html>
